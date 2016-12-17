@@ -1,5 +1,5 @@
-call compile preprocessFileLineNumbers "Engima\Traffic\Common\Common.sqf";
-call compile preprocessFileLineNumbers "Engima\Traffic\Common\Debug.sqf";
+call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Common.sqf";
+call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Debug.sqf";
 
 ENGIMA_TRAFFIC_instanceIndex = -1;
 ENGIMA_TRAFFIC_areaMarkerNames = [];
@@ -11,7 +11,7 @@ ENGIMA_TRAFFIC_edgeBottomLeftRoads = [];
 ENGIMA_TRAFFIC_edgeRoadsUseful = [];
 
 if (isServer) then {
-	call compile preprocessFileLineNumbers "Engima\Traffic\Server\randomCivilian.sqf";
-	call compile preprocessFileLineNumbers "Engima\Traffic\Server\Functions.sqf";
-	call compile preprocessFileLineNumbers "Engima\Traffic\ConfigAndStart.sqf";
+	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\randomCivilian.sqf";
+	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\Functions.sqf";
+	call compile preprocessFileLineNumbers "node_modules\engima-traffic\ConfigAndStart.sqf";
 };

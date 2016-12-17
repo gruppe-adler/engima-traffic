@@ -1,0 +1,15 @@
+{
+    "name": "engima-traffic",
+    "contributors": [
+        {
+            "name": "Fusselwurm"
+        },
+        {
+            "name": "Engima"
+        }
+    ],
+    "description": "Civilian traffic script by Engima, with some patches for Gruppe Adler",
+    "version": "0.1.0",
+    "dependencies": {
+    }
+}
