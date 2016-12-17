@@ -141,4 +141,8 @@ randomCivilian = {
     [_unit] call addKilledNews;
     [_unit] call addGunfightNews;
     [_unit] call addBehaviour;
+
+    {
+        [_unit] call _x;
+    } forEach ENGIMA_TRAFFIC_spawnHandler;
 };
