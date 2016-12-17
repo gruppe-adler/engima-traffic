@@ -82,13 +82,13 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
 				if (!(ENGIMA_TRAFFIC_edgeRoadsUseful select _index)) then {
 					ENGIMA_TRAFFIC_edgeRoadsUseful set [_index, true];
 				};
-				sleep 0.01;
+				sleep 0.05;
 			};
 			
 			_index = _index + 1;
 		};
 		
-		sleep 0.01;
+		sleep 0.03;
 		_i = _i + 50;
 		if (_i >= _segmentsCount) then {
 			_i = _nextStartPos;
@@ -127,12 +127,14 @@ ENGIMA_TRAFFIC_MoveVehicle = {
     };
     
     _speed = "NORMAL";
+    _behaviour = "CARELESS";
     if (_vehicle distance _destinationPos < 500) then {
         _speed = "LIMITED";
+        _behaviour = "SAFE";
     };
     
     _waypoint = group _vehicle addWaypoint [_destinationPos, 10];
-    _waypoint setWaypointBehaviour "SAFE";
+    _waypoint setWaypointBehaviour _behaviour;
     _waypoint setWaypointSpeed _speed;
     _waypoint setWaypointCompletionRadius 10;
     _waypoint setWaypointStatements ["true", "_nil = [" + str _currentInstanceIndex + ", " + vehicleVarName _vehicle + ", [], " + str _debug + "] spawn ENGIMA_TRAFFIC_MoveVehicle;"];
@@ -412,7 +414,11 @@ ENGIMA_TRAFFIC_StartTraffic = {
 	            _vehicle = _result select 0;
 	            _vehiclesCrew = _result select 1;
 	            _vehiclesGroup = _result select 2;
-	            
+
+	            {
+	                [_x] call randomCivilian;
+	            } forEach _vehiclesCrew;
+
 	            // Name vehicle
 	            sleep random 0.1;
 	            if (isNil "dre_MilitaryTraffic_CurrentEntityNo") then {
