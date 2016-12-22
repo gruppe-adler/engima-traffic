@@ -10,6 +10,7 @@ ENGIMA_TRAFFIC_edgeBottomRightRoads = [];
 ENGIMA_TRAFFIC_edgeBottomLeftRoads = [];
 ENGIMA_TRAFFIC_edgeRoadsUseful = [];
 ENGIMA_TRAFFIC_spawnHandler = [];
+ENGIMA_TRAFFIC_vehicleSpawnHandler = [];
 
 if (isServer) then {
 	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\randomCivilian.sqf";

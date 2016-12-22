@@ -4,4 +4,6 @@ modified version of [Engima's Traffic script](https://forums.bistudio.com/topic/
 [Engima's documentation](Documentation.txt)
 
 
-put functions into ENGIMA_TRAFFIC_spawnHandler . On spawning civs, they will be called , with the unit as first parameter
+event handlers may be pushed to:
+* the array ENGIMA_TRAFFIC_spawnHandler - will be called on spawning civs, with the unit as first parameter
+* the array ENGIMA_TRAFFIC_vehicleSpawnHandler - will be called on spawning cars, with the vehicle as first parameter

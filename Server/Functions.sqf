@@ -415,6 +415,8 @@ ENGIMA_TRAFFIC_StartTraffic = {
 	            _vehiclesCrew = _result select 1;
 	            _vehiclesGroup = _result select 2;
 
+                { [_vehicle] call _x; } forEach ENGIMA_TRAFFIC_vehicleSpawnHandler;
+
 	            {
 	                [_x] call randomCivilian;
 	            } forEach _vehiclesCrew;
