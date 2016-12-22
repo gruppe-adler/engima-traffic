@@ -1,0 +1,359 @@
+diff --git a/ConfigAndStart.sqf b/ConfigAndStart.sqf
+index 5d0eebe..360b43d 100644
+--- a/ConfigAndStart.sqf
++++ b/ConfigAndStart.sqf
+@@ -12,6 +12,17 @@
+ _parameters = [
+ 	["SIDE", civilian],
+ 	["VEHICLES", [
++	"C_Offroad_01_F",
++	"C_Offroad_01_repair_F",
++	"C_Hatchback_01_F",
++	"C_Hatchback_01_sport_F",
++	"C_SUV_01_F",
++	"C_Van_01_transport_F",
++	"C_Van_01_box_F",
++	"C_Van_01_fuel_F",
++
++	"C_Truck_02_fuel_F",
++	"C_Truck_02_box_F",
+ 
+ 
+ 	"RDS_Gaz24_Civ_01",
+@@ -28,33 +39,36 @@ _parameters = [
+ 	"RDS_Ikarus_Civ_02",
+ 	"RDS_Ikarus_Civ_02",
+ 
++	"RDS_S1203_Civ_01",
+ 	"RDS_S1203_Civ_02",
++	"RDS_S1203_Civ_03",
+ 
+ 	"RDS_Octavia_Civ_01",
+ 
++	"RDS_Lada_Civ_01",
+ 	"RDS_Lada_Civ_02",
+ 	"RDS_Lada_Civ_03",
+-	"RDS_Lada_Civ_04",
++
+ 	"RDS_Lada_Civ_05",
++	"RDS_Lada_Civ_01",
+ 	"RDS_Lada_Civ_02",
+ 	"RDS_Lada_Civ_03",
+-	"RDS_Lada_Civ_04",
+ 
+-	"RDS_Zetor6945_Base",
++
+ 
+ 	"RHS_Ural_Civ_01",
+ 	"RHS_Ural_Civ_02",
+ 	"RHS_Ural_Civ_03",
+ 	"RHS_Ural_Open_Civ_01",
+ 	"RHS_Ural_Open_Civ_02",
+-	"RHS_Ural_Open_Civ_03",
+-	"rhsgref_nat_uaz"
++	"RHS_Ural_Open_Civ_03"
+ 	]],
+ 	["VEHICLES_COUNT", 10],
+-	["MIN_SPAWN_DISTANCE", 1500],
+-	["MAX_SPAWN_DISTANCE", 2500],
+-	["MIN_SKILL", 1],
+-	["MAX_SKILL", 1],
++	["MIN_SPAWN_DISTANCE", 800],
++	["MAX_SPAWN_DISTANCE", 2000],
++	["MIN_SKILL", 0.4],
++	["MAX_SKILL", 0.6],
++  ["AREA_MARKER", "mrk_drive_area"],
+ 	["DEBUG", false]
+ ];
+ 
+diff --git a/Init.sqf b/Init.sqf
+index 56b3557..106c72b 100644
+--- a/Init.sqf
++++ b/Init.sqf
+@@ -1,5 +1,5 @@
+-call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Common.sqf";
+-call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Debug.sqf";
++call compile preprocessFileLineNumbers "Engima\Traffic\Common\Common.sqf";
++call compile preprocessFileLineNumbers "Engima\Traffic\Common\Debug.sqf";
+ 
+ ENGIMA_TRAFFIC_instanceIndex = -1;
+ ENGIMA_TRAFFIC_areaMarkerNames = [];
+@@ -9,11 +9,19 @@ ENGIMA_TRAFFIC_edgeTopRightRoads = [];
+ ENGIMA_TRAFFIC_edgeBottomRightRoads = [];
+ ENGIMA_TRAFFIC_edgeBottomLeftRoads = [];
+ ENGIMA_TRAFFIC_edgeRoadsUseful = [];
+-ENGIMA_TRAFFIC_spawnHandler = [];
+-ENGIMA_TRAFFIC_vehicleSpawnHandler = [];
+ 
+ if (isServer) then {
+-	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\randomCivilian.sqf";
+-	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\Functions.sqf";
+-	call compile preprocessFileLineNumbers "node_modules\engima-traffic\ConfigAndStart.sqf";
++	call compile preprocessFileLineNumbers "Engima\Traffic\Server\Functions.sqf";
++	call compile preprocessFileLineNumbers "Engima\Traffic\ConfigAndStart.sqf";
++};
++
++
++setCustomFace = 
++{ 
++	_thisunit = _this select 0;
++	_face = _this select 1;
++	_thisunit setFace _face;
++	_thisunit disableConversation true;
++	enableSentences false;
++	_thisunit setVariable ["BIS_noCoreConversations", true];
+ };
+\ No newline at end of file
+diff --git a/Server/Functions.sqf b/Server/Functions.sqf
+index 5004f4c..11936ca 100644
+--- a/Server/Functions.sqf
++++ b/Server/Functions.sqf
+@@ -1,5 +1,29 @@
+ if (!isNil "ENGIMA_TRAFFIC_functionsInitialized") exitWith {};
+ 
++/*
++// thx to grumpy old man
++GRAD_fnc_filterJungleRoad = {
++	_array = _this select 0;
++	{
++		_node = _x;
++    _mkr = createMarkerLocal[ str _node, getPos _node ];
++    _mkr setMarkerShapeLocal "ELLIPSE";
++    _mkr setMarkerSizeLocal [ 10, 10 ];
++    if (DEBUG) then {
++    	_mkr setMarkerAlphaLocal 1;
++	} else {
++		_mkr setMarkerAlphaLocal 0;
++	};
++    if ( isOnRoad getPos _node ) then {
++
++			_array =  _array + [_x];
++		 };
++	sleep 0.0001;
++	} forEach _array;
++	_array;
++};
++*/
++
+ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 	private ["_minTopLeftDistances", "_minTopRightDistances", "_minBottomRightDistances", "_minBottomLeftDistances"];
+ 	private ["_worldTrigger", "_worldSize", "_mapTopLeftPos", "_mapTopRightPos", "_mapBottomRightPos", "_mapBottomLeftPos", "_i", "_nextStartPos", "_segmentsCount"];
+@@ -10,7 +34,7 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 	sleep 2; // Wait for all traffic instances to be registered
+ 
+ 	_worldTrigger = call BIS_fnc_worldArea;
+-	_worldSize = triggerArea _worldTrigger;
++	_worldSize = triggerArea _worldTrigger; // triggerArea _worldTrigger;
+ 	_mapTopLeftPos = [0, 2 * (_worldSize select 1)];
+ 	_mapTopRightPos = [2 * (_worldSize select 0), 2 * (_worldSize select 1)];
+ 	_mapBottomRightPos = [2 * (_worldSize select 0), 0];
+@@ -27,10 +51,16 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 		_minBottomLeftDistances pushBack 1000000;
+ 	};
+ 
++	
+ 	ENGIMA_TRAFFIC_allRoadSegments = [0,0,0] nearRoads 1000000;
++	// ENGIMA_TRAFFIC_allRoadSegments = [ENGIMA_TRAFFIC_allRoadSegments] call GRAD_fnc_filterJungleRoad;
+ 	sleep 0.01;
+ 	_segmentsCount = count ENGIMA_TRAFFIC_allRoadSegments;
+ 
++	
++	diag_log format ["ENGIMA found %1 road segments.",_segmentsCount];
++	
++
+ 	// Find all edge road segments
+ 	_i = 0;
+ 	_nextStartPos = 1;
+@@ -38,10 +68,13 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 		private ["_index", "_road", "_roadPos", "_markerName", "_insideMarker", "_roads"];
+ 
+ 		_road = ENGIMA_TRAFFIC_allRoadSegments select _i;
++
+ 		_roadPos = getPos _road;
+ 
+ 		_index = 0;
+ 
++
++
+ 		// Top left
+ 		while { _index <= ENGIMA_TRAFFIC_instanceIndex } do {
+ 			_markerName = ENGIMA_TRAFFIC_areaMarkerNames select _index; // Get the marker name for the current instance
+@@ -82,13 +115,13 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 				if (!(ENGIMA_TRAFFIC_edgeRoadsUseful select _index)) then {
+ 					ENGIMA_TRAFFIC_edgeRoadsUseful set [_index, true];
+ 				};
+-				sleep 0.05;
++				sleep 0.01;
+ 			};
+ 
+ 			_index = _index + 1;
+ 		};
+ 
+-		sleep 0.03;
++		sleep 0.01;
+ 		_i = _i + 50;
+ 		if (_i >= _segmentsCount) then {
+ 			_i = _nextStartPos;
+@@ -100,6 +133,11 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
+ 	};
+ 
+ 	ENGIMA_TRAFFIC_edgeRoadsInitialized = true;
++	publicVariable "ENGIMA_TRAFFIC_edgeRoadsInitialized";
++	diag_log format ["..................................................................."];
++	diag_log format ["................ENGIMA_TRAFFIC_edgeRoadsInitialized................"];
++	diag_log format ["..................................................................."];
++
+ };
+ 
+ ENGIMA_TRAFFIC_MoveVehicle = {
+@@ -114,7 +152,7 @@ ENGIMA_TRAFFIC_MoveVehicle = {
+     if (count _this > 3) then {_debug = _this select 3;} else {_debug = false;};
+ 
+     // Set fuel to something in between 0.3 and 0.9.
+-    _fuel = 0.3 + random (0.9 - 0.3);
++    _fuel = 0.1 + random (0.4);
+     _vehicle setFuel _fuel;
+ 
+     if (count _firstDestinationPos > 0) then {
+@@ -127,24 +165,23 @@ ENGIMA_TRAFFIC_MoveVehicle = {
+     };
+ 
+     _speed = "NORMAL";
+-    _behaviour = "CARELESS";
+     if (_vehicle distance _destinationPos < 500) then {
+         _speed = "LIMITED";
+-        _behaviour = "SAFE";
+     };
+ 
+     _waypoint = group _vehicle addWaypoint [_destinationPos, 10];
+-    _waypoint setWaypointBehaviour _behaviour;
++    _waypoint setWaypointBehaviour "CARELESS";
+     _waypoint setWaypointSpeed _speed;
+     _waypoint setWaypointCompletionRadius 10;
+     _waypoint setWaypointStatements ["true", "_nil = [" + str _currentInstanceIndex + ", " + vehicleVarName _vehicle + ", [], " + str _debug + "] spawn ENGIMA_TRAFFIC_MoveVehicle;"];
+ };
+ 
+ ENGIMA_TRAFFIC_StartTraffic = {
++
+ 	if (!isServer) exitWith {};
+ 
+ 	private ["_side", "_vehicleCount", "_minSpawnDistance", "_maxSpawnDistance", "_minSkill", "_maxSkill", "_areaMarkerName", "_hideAreaMarker", "_debug"];
+-	private ["_allPlayerPositions", "_allPlayerPositionsTemp", "_activeVehiclesAndGroup", "_vehiclesGroup", "_spawnSegment", "_vehicle", "_group", "_result", "_possibleVehicles", "_vehicleType", "_vehiclesCrew", "_skill", "_minDistance", "_tries", "_trafficLocation"];
++	private ["_allPlayerPositions", "_allPlayerPositionsTemp", "_activeVehiclesAndGroup", "_vehicleGroup", "_spawnSegment", "_vehicle", "_group", "_result", "_possibleVehicles", "_vehicleType", "_vehiclesCrew", "_skill", "_minDistance", "_tries", "_trafficLocation"];
+ 	private ["_currentEntityNo", "_vehicleVarName", "_tempVehiclesAndGroup", "_deletedVehiclesCount", "_firstIteration", "_roadSegments", "_destinationSegment", "_destinationPos", "_direction"];
+ 	private ["_roadSegmentDirection", "_testDirection", "_facingAway", "_posX", "_posY", "_pos", "_currentInstanceIndex"];
+ 	private ["_fnc_OnSpawnVehicle", "_fnc_OnRemoveVehicle", "_fnc_FindSpawnSegment"];
+@@ -163,11 +200,13 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 	_fnc_OnRemoveVehicle = [_this, "ON_REMOVE_CALLBACK", {}] call ENGIMA_TRAFFIC_GetParamValue;
+ 	_debug = [_this, "DEBUG", false] call ENGIMA_TRAFFIC_GetParamValue;
+ 
++
++
+ 	if (_areaMarkerName != "" && _hideAreaMarker) then {
+ 		_areaMarkerName setMarkerAlpha 0;
+ 	};
+ 
+-	sleep random 1;
++	sleep (random 1);
+ 	ENGIMA_TRAFFIC_instanceIndex = ENGIMA_TRAFFIC_instanceIndex + 1;
+ 	_currentInstanceIndex = ENGIMA_TRAFFIC_instanceIndex;
+ 
+@@ -179,7 +218,7 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 
+ 	_fnc_FindSpawnSegment = {
+ 	    private ["_currentInstanceIndex", "_allPlayerPositions", "_minSpawnDistance", "_maxSpawnDistance", "_activeVehiclesAndGroup"];
+-	    private ["_insideMarker", "_areaMarkerName", "_refPlayerPos", "_roadSegments", "_roadSegment", "_isOk", "_tries", "_result", "_spawnDistanceDiff", "_refPosX", "_refPosY", "_dir", "_tooFarAwayFromAll", "_tooClose", "_tooCloseToAnotherVehicle"];
++	    private ["_isRoad", "_insideMarker", "_areaMarkerName", "_refPlayerPos", "_roadSegments", "_roadSegment", "_isOk", "_tries", "_result", "_spawnDistanceDiff", "_refPosX", "_refPosY", "_dir", "_tooFarAwayFromAll", "_tooClose", "_tooCloseToAnotherVehicle"];
+ 
+ 		_currentInstanceIndex = _this select 0;
+ 	    _allPlayerPositions = _this select 1;
+@@ -212,6 +251,11 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 	            _tooClose = false;
+                 _insideMarker = true;
+                 _tooCloseToAnotherVehicle = false;
++                _isRoad = false;
++
++                if (isOnRoad (ASLToAGL getPosASL _roadSegment)) then {
++                	_isRoad = true;
++                };
+ 
+                 if (_areaMarkerName != "" && !([getPos _roadSegment, _areaMarkerName] call ENGIMA_TRAFFIC_PositionIsInsideMarker)) then {
+                 	_insideMarker = false;
+@@ -250,7 +294,7 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 
+ 	            _isOk = true;
+ 
+-	            if (_tooClose || _tooFarAwayFromAll || _tooCloseToAnotherVehicle || !_insideMarker) then {
++	            if (_tooClose || _tooFarAwayFromAll || _tooCloseToAnotherVehicle || !_insideMarker || !_isRoad) then {
+ 	                _isOk = false;
+ 	                _tries = _tries + 1;
+ 	            };
+@@ -297,6 +341,8 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 
+ 		if (count _allPlayerPositionsTemp > 0) then {
+ 			_allPlayerPositions = _allPlayerPositionsTemp;
++		} else {
++			_allPlayerPositions = [0,0,0];
+ 		};
+ 
+ 	    // If there are few vehicles, add a vehicle
+@@ -363,7 +409,7 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 	            _destinationSegment = _roadSegments select floor random count _roadSegments;
+ 	            _destinationPos = getPos _destinationSegment;
+ 
+-	            _direction = ((_destinationPos select 0) - (getPos _spawnSegment select 0)) atan2 ((_destinationPos select 1) - (getpos _spawnSegment select 1));
++	            _direction = ((_destinationPos select 0) - (getPos _spawnSegment select 0)) atan2 ((_destinationPos select 1) - (getposATL _spawnSegment select 1));
+ 	            _roadSegmentDirection = getDir _spawnSegment;
+ 
+ 	            while {_roadSegmentDirection < 0} do {
+@@ -410,16 +456,23 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 
+ 	            // Create vehicle
+ 	            _vehicleType = _possibleVehicles select floor (random count _possibleVehicles);
+-	            _result = [_pos, _direction, _vehicleType, _side] call BIS_fnc_spawnVehicle;
+-	            _vehicle = _result select 0;
+-	            _vehiclesCrew = _result select 1;
+-	            _vehiclesGroup = _result select 2;
++	            //_vehicleGroup = createGroup _side;
++	            //_vehicle = createVehicle [_vehicleType, _pos, [], 0, "NONE"];
++	            // Run spawn script and attach handle to vehicle
++	            _vehicleArray = [_pos,_vehicleType,_side] call createrebelVehicle;
++				_vehicle = _vehicleArray select 0;
++	            diag_log format ["traffic: vehicle is %1",_vehicle];
++		        //_result = [_pos, _direction, _vehicleType, _vehicleGroup] call BIS_fnc_spawnVehicle;
+ 
+-                { [_vehicle] call _x; } forEach ENGIMA_TRAFFIC_vehicleSpawnHandler;
++				// = [_vehicleType] ... "createVehicle.sqf";
++
++				_vehicleGroup = _vehicleArray select 1;
++				_vehiclesCrew = units _vehicleGroup;
+ 
+-	            {
+-	                [_x] call randomCivilian;
+-	            } forEach _vehiclesCrew;
++
++
++				_result = [_vehicle, _vehiclesCrew, _vehicleGroup];
++	            // Array - 0: created vehicle (Object), 1: all crew (Array of Objects), 2: vehicle's group (Group)
+ 
+ 	            // Name vehicle
+ 	            sleep random 0.1;
+@@ -446,7 +499,7 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 
+ 	            // Start vehicle
+ 	            [_currentInstanceIndex, _vehicle, _destinationPos, _debug] spawn ENGIMA_TRAFFIC_MoveVehicle;
+-	            _activeVehiclesAndGroup pushBack [_vehicle, _vehiclesGroup, _vehiclesCrew, _debugMarkerName];
++	            _activeVehiclesAndGroup pushBack [_vehicle, _vehicleGroup, _vehiclesCrew, _debugMarkerName];
+ 	            sleep 0.01;
+ 
+ 	            // Run spawn script and attach handle to vehicle
+@@ -496,7 +549,8 @@ ENGIMA_TRAFFIC_StartTraffic = {
+ 	            // Terminate script before deleting the vehicle
+ 	            _scriptHandle = _vehicle getVariable "dre_scriptHandle";
+ 	            if (!(scriptDone _scriptHandle)) then {
+-	                terminate _scriptHandle;
++	                waitUntil {scriptDone _scriptHandle};
++
+ 	            };
+ 
+ 	            deleteVehicle _vehicle;
