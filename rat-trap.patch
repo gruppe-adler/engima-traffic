@@ -66,44 +66,6 @@ index 5d0eebe..360b43d 100644
  	["DEBUG", false]
  ];
  
-diff --git a/Init.sqf b/Init.sqf
-index 56b3557..106c72b 100644
---- a/Init.sqf
-+++ b/Init.sqf
-@@ -1,5 +1,5 @@
--call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Common.sqf";
--call compile preprocessFileLineNumbers "node_modules\engima-traffic\Common\Debug.sqf";
-+call compile preprocessFileLineNumbers "Engima\Traffic\Common\Common.sqf";
-+call compile preprocessFileLineNumbers "Engima\Traffic\Common\Debug.sqf";
- 
- ENGIMA_TRAFFIC_instanceIndex = -1;
- ENGIMA_TRAFFIC_areaMarkerNames = [];
-@@ -9,11 +9,19 @@ ENGIMA_TRAFFIC_edgeTopRightRoads = [];
- ENGIMA_TRAFFIC_edgeBottomRightRoads = [];
- ENGIMA_TRAFFIC_edgeBottomLeftRoads = [];
- ENGIMA_TRAFFIC_edgeRoadsUseful = [];
--ENGIMA_TRAFFIC_spawnHandler = [];
--ENGIMA_TRAFFIC_vehicleSpawnHandler = [];
- 
- if (isServer) then {
--	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\randomCivilian.sqf";
--	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\Functions.sqf";
--	call compile preprocessFileLineNumbers "node_modules\engima-traffic\ConfigAndStart.sqf";
-+	call compile preprocessFileLineNumbers "Engima\Traffic\Server\Functions.sqf";
-+	call compile preprocessFileLineNumbers "Engima\Traffic\ConfigAndStart.sqf";
-+};
-+
-+
-+setCustomFace = 
-+{ 
-+	_thisunit = _this select 0;
-+	_face = _this select 1;
-+	_thisunit setFace _face;
-+	_thisunit disableConversation true;
-+	enableSentences false;
-+	_thisunit setVariable ["BIS_noCoreConversations", true];
- };
-\ No newline at end of file
 diff --git a/Server/Functions.sqf b/Server/Functions.sqf
 index 5004f4c..11936ca 100644
 --- a/Server/Functions.sqf
