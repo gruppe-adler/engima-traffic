@@ -17,15 +17,3 @@ if (isServer) then {
 	call compile preprocessFileLineNumbers "node_modules\engima-traffic\Server\Functions.sqf";
 	call compile preprocessFileLineNumbers "node_modules\engima-traffic\ConfigAndStart.sqf";
 };
-
-
-setCustomFace = 
-{ 
-       _thisunit = _this select 0;
-       _face = _this select 1;
-       _thisunit setFace _face;
-       _thisunit disableConversation true;
-       enableSentences false;
-       _thisunit setVariable ["BIS_noCoreConversations", true];
-};
-
