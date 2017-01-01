@@ -435,11 +435,10 @@ ENGIMA_TRAFFIC_StartTraffic = {
 		        //_result = [_pos, _direction, _vehicleType, _vehicleGroup] call BIS_fnc_spawnVehicle;
 
 				// = [_vehicleType] ... "createVehicle.sqf";
+                { [_vehicle] call _x; } forEach ENGIMA_TRAFFIC_vehicleSpawnHandler;
 
 				_vehicleGroup = _vehicleArray select 1;
 				_vehiclesCrew = units _vehicleGroup;
-
-
 
 				_result = [_vehicle, _vehiclesCrew, _vehicleGroup];
 	            // Array - 0: created vehicle (Object), 1: all crew (Array of Objects), 2: vehicle's group (Group)
