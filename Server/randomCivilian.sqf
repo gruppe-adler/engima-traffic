@@ -1,3 +1,8 @@
+#define DEBUG_MODE_FULL
+#define PREFIX engimaTraffic
+#define COMPONENT server
+#include "\x\cba\addons\main\script_macros_mission.hpp"
+
 /*
  civ units made from rhs or rds
 */
@@ -75,7 +80,7 @@ randomCivilian = {
 			removeVest _it;
 			removeBackpack _it;
 			removeHeadgear _it;
-			removeGoggles _it;	
+			removeGoggles _it;
 	};
 
 	_reclotheHim = {
@@ -87,7 +92,7 @@ randomCivilian = {
 
 		[[_guy,_taliFaces], "setCustomFace"] call BIS_fnc_MP;
 		_guy setVariable ["BIS_noCoreConversations", true];
-		
+
 	};
 
 	/*
@@ -98,7 +103,7 @@ randomCivilian = {
 
 			if ((_this select 0) getVariable "fleeing" == "true") exitWith {};
 
-			_thisUnit = _this select 0;		
+			_thisUnit = _this select 0;
 
 			sleep (random 1);
 		 	{[_x] execVM "Engima\Traffic\Server\fleeYouFool.sqf";} forEach crew (vehicle _thisUnit);
@@ -116,7 +121,7 @@ randomCivilian = {
        (_this select 0) addEventhandler ["Killed",
         {
          CIV_KILLED_POS = (position (_this select 0));
-         diag_log format ["civ killed at %1",CIV_KILLED_POS];
+         INFO_1("civ killed at %1", CIV_KILLED_POS);
          publicVariableServer "CIV_KILLED_POS";
          (_this select 0) removeAllEventHandlers "Killed";
          (_this select 0) removeAllEventHandlers "FiredNear";
@@ -128,7 +133,7 @@ randomCivilian = {
        (_this select 0) addEventhandler ["FiredNear",
         {
          CIV_GUNFIGHT_POS = (position (_this select 0));
-         diag_log format ["civ gunfight at %1",CIV_GUNFIGHT_POS];
+         INFO_1("civ gunfight at %1",CIV_GUNFIGHT_POS);
          publicVariableServer "CIV_GUNFIGHT_POS";
         }];
 

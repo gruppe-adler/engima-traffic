@@ -1,11 +1,11 @@
-/* 
+/*
  * This file contains parameters to config and function call to start an instance of
  * traffic in the mission. The file is edited by the mission developer.
  *
- * See file Engima\Traffic\Documentation.txt for documentation and a full reference of 
+ * See file Engima\Traffic\Documentation.txt for documentation and a full reference of
  * how to customize and use Engima's Traffic.
  */
- 
+
  private ["_parameters"];
 
 // Set traffic parameters.
@@ -68,7 +68,7 @@ _parameters = [
 	["MAX_SPAWN_DISTANCE", 2000],
 	["MIN_SKILL", 0.4],
 	["MAX_SKILL", 0.6],
-  ["AREA_MARKER", "mrk_drive_area"],
+  // ["AREA_MARKER", "mrk_drive_area"],
 	["DEBUG", false]
 ];
 

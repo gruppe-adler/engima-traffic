@@ -1,7 +1,14 @@
+
+#define PREFIX engimaTraffic
+#define COMPONENT customGruppeAdler
+#include "\x\cba\addons\main\script_macros_mission.hpp"
+
 createrebelVehicle = {
 	_pos = _this select 0;
 	_vehicleType = _this select 1;
 	_side = _this select 2;
+
+    TRACE_3("creating rebel vehicle type %1 at %2 for side %3", _vehicleType, _pos, _side);
 
 	_crewCount = floor (random 1);
 
@@ -9,6 +16,7 @@ createrebelVehicle = {
 	_createDriver = {
 		_grp0 = _this select 0;
 		_car0 = _this select 1;
+
 
 		_crewDriver = _grp0 createUnit ["C_man_1", _pos, [], 0, "CARGO"];
 

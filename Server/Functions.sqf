@@ -1,7 +1,7 @@
+
 #define PREFIX engimaTraffic
 #define COMPONENT server
 #include "\x\cba\addons\main\script_macros_mission.hpp"
-#include "..\missionDefines.hpp"
 
 if (!isNil "ENGIMA_TRAFFIC_functionsInitialized") exitWith {};
 
@@ -114,10 +114,7 @@ ENGIMA_TRAFFIC_FindEdgeRoads = {
 
 	ENGIMA_TRAFFIC_edgeRoadsInitialized = true;
 	publicVariable "ENGIMA_TRAFFIC_edgeRoadsInitialized";
-	diag_log format ["..................................................................."];
-	diag_log format ["................ENGIMA_TRAFFIC_edgeRoadsInitialized................"];
-	diag_log format ["..................................................................."];
-
+	INFO("................ENGIMA_TRAFFIC_edgeRoadsInitialized................");
 };
 
 ENGIMA_TRAFFIC_MoveVehicle = {
@@ -434,7 +431,7 @@ ENGIMA_TRAFFIC_StartTraffic = {
 	            // Run spawn script and attach handle to vehicle
 	            _vehicleArray = [_pos,_vehicleType,_side] call createrebelVehicle;
 				_vehicle = _vehicleArray select 0;
-	            diag_log format ["traffic: vehicle is %1",_vehicle];
+	            INFO_1("traffic: vehicle is %1", _vehicle);
 		        //_result = [_pos, _direction, _vehicleType, _vehicleGroup] call BIS_fnc_spawnVehicle;
 
 				// = [_vehicleType] ... "createVehicle.sqf";
