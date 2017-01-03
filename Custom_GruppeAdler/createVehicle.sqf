@@ -10,7 +10,7 @@ createrebelVehicle = {
 
     TRACE_3("creating rebel vehicle type %1 at %2 for side %3", _vehicleType, _pos, _side);
 
-	_crewCount = floor (random 1);
+	_crewCount = floor (random [9, 2, 0] / 3);
 
 
 	_createDriver = {
