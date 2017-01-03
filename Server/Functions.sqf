@@ -164,18 +164,18 @@ ENGIMA_TRAFFIC_StartTraffic = {
 	private ["_fnc_OnSpawnVehicle", "_fnc_OnRemoveVehicle", "_fnc_FindSpawnSegment"];
 	private ["_debugMarkerName"];
 
-	_side = [_this, "SIDE", civilian] call ENGIMA_TRAFFIC_GetParamValue;
-	_possibleVehicles = [_this, "VEHICLES", ["C_Offroad_01_F", "C_Offroad_01_repair_F", "C_Quadbike_01_F", "C_Hatchback_01_F", "C_Hatchback_01_sport_F", "C_SUV_01_F", "C_Van_01_transport_F", "C_Van_01_box_F", "C_Van_01_fuel_F"]] call ENGIMA_TRAFFIC_GetParamValue;
-	_vehicleCount = [_this, "VEHICLES_COUNT", 10] call ENGIMA_TRAFFIC_GetParamValue;
-	_minSpawnDistance = [_this, "MIN_SPAWN_DISTANCE", 800] call ENGIMA_TRAFFIC_GetParamValue;
-	_maxSpawnDistance = [_this, "MAX_SPAWN_DISTANCE", 1200] call ENGIMA_TRAFFIC_GetParamValue;
-	_minSkill = [_this, "MIN_SKILL", 0.3] call ENGIMA_TRAFFIC_GetParamValue;
-	_maxSkill = [_this, "MAX_SKILL", 0.7] call ENGIMA_TRAFFIC_GetParamValue;
-	_areaMarkerName = [_this, "AREA_MARKER", ""] call ENGIMA_TRAFFIC_GetParamValue;
-	_hideAreaMarker = [_this, "HIDE_AREA_MARKER", true] call ENGIMA_TRAFFIC_GetParamValue;
-	_fnc_OnSpawnVehicle = [_this, "ON_SPAWN_CALLBACK", {}] call ENGIMA_TRAFFIC_GetParamValue;
-	_fnc_OnRemoveVehicle = [_this, "ON_REMOVE_CALLBACK", {}] call ENGIMA_TRAFFIC_GetParamValue;
-	_debug = [_this, "DEBUG", false] call ENGIMA_TRAFFIC_GetParamValue;
+	_side = [_this, "SIDE"] call CBA_fnc_hashGet;
+	_possibleVehicles = [_this, "VEHICLES"] call CBA_fnc_hashGet;
+	_vehicleCount = [_this, "VEHICLES_COUNT"] call CBA_fnc_hashGet;
+	_minSpawnDistance = [_this, "MIN_SPAWN_DISTANCE"] call CBA_fnc_hashGet;
+	_maxSpawnDistance = [_this, "MAX_SPAWN_DISTANCE"] call CBA_fnc_hashGet;
+	_minSkill = [_this, "MIN_SKILL"] call CBA_fnc_hashGet;
+	_maxSkill = [_this, "MAX_SKILL"] call CBA_fnc_hashGet;
+	_areaMarkerName = [_this, "AREA_MARKER"] call CBA_fnc_hashGet;
+	_hideAreaMarker = [_this, "HIDE_AREA_MARKER"] call CBA_fnc_hashGet;
+	_fnc_OnSpawnVehicle = [_this, "ON_SPAWN_CALLBACK"] call CBA_fnc_hashGet;
+	_fnc_OnRemoveVehicle = [_this, "ON_REMOVE_CALLBACK"] call CBA_fnc_hashGet;
+	_debug = [_this, "DEBUG"] call CBA_fnc_hashGet;
 
 	if (_areaMarkerName != "" && _hideAreaMarker) then {
 		_areaMarkerName setMarkerAlpha 0;

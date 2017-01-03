@@ -71,6 +71,16 @@
     "RDS_Zetor6945_Base"
  ]] call CBA_fnc_hashSet;
 
+private _getEngimaConfigValue = {
+    private _key = param [0, ""];
+    private _default = param [1];
+
+    [
+        _key,
+        [(missionConfigFile >> "EngimaTraffic"), _key, _default] call BIS_fnc_returnConfigEntry
+    ];
+};
+
 private _vehicleSetNames = [(missionConfigFile >> "EngimaTraffic"), "vehicleSets", ["A3"]] call BIS_fnc_returnConfigEntry;
 private _vehicleClasses = [];
 
@@ -80,18 +90,18 @@ private _vehicleClasses = [];
 
 TRACE_1("using vehicle classes %1", _vehicleClasses);
 
-// Set traffic parameters.
-_parameters = [
-	["SIDE", civilian],
-	["VEHICLES", _vehicleClasses],
-	["VEHICLES_COUNT", 10],
-	["MIN_SPAWN_DISTANCE", 800],
-	["MAX_SPAWN_DISTANCE", 2000],
-	["MIN_SKILL", 0.4],
-	["MAX_SKILL", 0.6],
-  // ["AREA_MARKER", "mrk_drive_area"],
-	["DEBUG", false]
-];
-
 // Start an instance of the traffic
-_parameters spawn ENGIMA_TRAFFIC_StartTraffic;
+([[
+    ["VEHICLES", _vehicleClasses] call _getEngimaConfigValue,
+    ["SIDE", civilian] call _getEngimaConfigValue,
+    ["VEHICLES_COUNT", 10] call _getEngimaConfigValue,
+    ["MIN_SPAWN_DISTANCE", 800] call _getEngimaConfigValue,
+    ["MAX_SPAWN_DISTANCE", 1200] call _getEngimaConfigValue,
+    ["MIN_SKILL", 0.3] call _getEngimaConfigValue,
+    ["MAX_SKILL", 0.7] call _getEngimaConfigValue,
+    ["AREA_MARKER", ""] call _getEngimaConfigValue,
+    ["HIDE_AREA_MARKER", true] call _getEngimaConfigValue,
+    ["ON_SPAWN_CALLBACK", {}] call _getEngimaConfigValue,
+    ["ON_REMOVE_CALLBACK", {}] call _getEngimaConfigValue,
+    ["DEBUG", false] call _getEngimaConfigValue
+]] call CBA_fnc_hashCreate) spawn ENGIMA_TRAFFIC_StartTraffic;

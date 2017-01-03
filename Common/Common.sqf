@@ -1,29 +1,4 @@
 /*
- * Summary: Gets a parameter value in a paired list on format ["KEY", value].
- * Arguments:
- *   _params: List of paired value parameters.
- *   _key: String with key to look for.
- *   _default: Value that is returned if key was not found.
- * Returns: Value associated with key. ObjNull if no key was found.
- */
-ENGIMA_TRAFFIC_GetParamValue = {
-  	private ["_params", "_key"];
-  	private ["_value"];
-
-   	_params = _this select 0;
-   	_key = _this select 1;
-	_value = if (count _this > 2) then { _this select 2 } else { objNull };
-
-   	{
-   		if (_x select 0 == _key) then {
-   			_value = _x select 1;
-   		};
-   	} foreach (_params);
-    	
-   	_value
-};
-
-/*
  * Summary: Checks if a marker exists.
  * Arguments:
  *   _marker: Marker name of marker to test.
@@ -81,7 +56,7 @@ ENGIMA_TRAFFIC_PositionIsInsideMarker = {
             _isInside = true;
         };
     };
-    
+
     if (markerShape _markerName == "ELLIPSE") then {
         _res = (((_rpx-_mpx)^2)/(_msx^2)) + (((_rpy-_mpy)^2)/(_msy^2));
         if ( _res < 1 ) then
