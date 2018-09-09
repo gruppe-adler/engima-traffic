@@ -12,7 +12,6 @@
  */
 
  private ["_parameters"];
-
  private _vehicleSets = [] call CBA_fnc_hashCreate;
 
  [_vehicleSets, "A3", [
@@ -87,7 +86,6 @@ private _vehicleClasses = [];
 {
     _vehicleClasses = _vehicleClasses + ([_vehicleSets, _x] call CBA_fnc_HashGet);
 } forEach _vehicleSetNames;
-
 TRACE_1("using vehicle classes %1", _vehicleClasses);
 
 // Start an instance of the traffic
@@ -104,4 +102,4 @@ TRACE_1("using vehicle classes %1", _vehicleClasses);
     ["ON_SPAWN_CALLBACK", {}] call _getEngimaConfigValue,
     ["ON_REMOVE_CALLBACK", {}] call _getEngimaConfigValue,
     ["DEBUG", false] call _getEngimaConfigValue
-]] call CBA_fnc_hashCreate) spawn ENGIMA_TRAFFIC_StartTraffic;
+]] call CBA_fnc_hashCreate) spawn enigmaTraffic_fnc_StartTraffic;
