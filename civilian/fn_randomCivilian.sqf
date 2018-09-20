@@ -106,7 +106,7 @@ private _addGunfightNews = {
 
 [_unit] call _stripHim;
 [_unit] call _reclotheHim;
-if () then {[_unit] call enigmaTraffic_fnc_addFleeingBehaviour;};
+//if (false) then {[_unit] call enigmaTraffic_fnc_addFleeingBehaviour;};
 [_unit] call _addKilledNews;
 [_unit] call _addGunfightNews;
 [_unit] call _addBehaviour;
