@@ -57,7 +57,7 @@ private _activeVehiclesAndGroup = [];
             if (isPlayer _x) then {
                _allPlayerPositionsTemp = _allPlayerPositionsTemp + [position vehicle _x];
             };
-         } foreach (playableUnits);
+         } foreach allPlayers;
       }else{
          _allPlayerPositionsTemp = [position vehicle player];
       };
