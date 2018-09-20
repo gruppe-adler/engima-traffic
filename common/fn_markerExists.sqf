@@ -11,8 +11,7 @@
 
 params ["_marker"];
 
-private _exists = false;
-if (((getMarkerPos _marker) select 0) != 0 || ((getMarkerPos _marker) select 1 != 0)) then {
-	_exists = true;
-};
-_exists
+private _markerPos = (getMarkerPos _marker);
+if ((_markerPos select 0) != 0 || (_markerPos select 1 != 0)) exitWith {true;};
+
+false
