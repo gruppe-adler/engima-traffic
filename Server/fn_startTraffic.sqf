@@ -55,7 +55,7 @@ private _activeVehiclesAndGroup = [];
       if (isMultiplayer) then {
          {
             if (isPlayer _x) then {
-               _allPlayerPositionsTemp = _allPlayerPositionsTemp + [position vehicle _x];
+               _allPlayerPositionsTemp = _allPlayerPositionsTemp append [position vehicle _x];
             };
          } foreach allPlayers;
       }else{
