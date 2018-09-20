@@ -156,7 +156,7 @@ private _activeVehiclesAndGroup = [];
             private _pos = [_posX, _posY, 0];
 
             // Create vehicle
-            private _vehicleType = _possibleVehicles select (floor (random (count _possibleVehicles)));
+            private _vehicleType = _possibleVehicles selectRandom _possibleVehicles;
 
             // Run spawn script and attach handle to vehicle
             private _vehicleArray = [_pos,_vehicleType,_side] call enigmaTraffic_fnc_createRebelVehicle;
@@ -193,8 +193,8 @@ private _activeVehiclesAndGroup = [];
             [_currentInstanceIndex, _vehicle, _destinationPos, _debug] spawn ENGIMA_TRAFFIC_MoveVehicle;
             _activeVehiclesAndGroup pushBack [_vehicle, _vehicleGroup, _vehiclesCrew, _debugMarkerName];
 
-            // Run spawn script and attach handle to vehicle
-            _vehicle setVariable ["enigmaTraffic_scriptHandle", _result spawn _fnc_OnSpawnVehicle];
+            // Run spawn script
+             _result spawn _fnc_OnSpawnVehicle;
          };
 
          _tries = _tries + 1;
@@ -226,12 +226,6 @@ private _activeVehiclesAndGroup = [];
             {
                deleteVehicle _x;
             } foreach _crewUnits;
-
-            // Terminate script before deleting the vehicle
-            _scriptHandle = _vehicle getVariable "enigmaTraffic_scriptHandle";
-            if (!(scriptDone _scriptHandle)) then {
-               waitUntil {scriptDone _scriptHandle};
-            };
 
             deleteVehicle _vehicle;
             deleteGroup _group;
