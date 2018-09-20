@@ -12,7 +12,7 @@
 
 if (!isNull player) then {
    if (!ENGIMA_TRAFFIC_SilentDebugMode) then {
-      player sideChat (_this select 0);
+      systemChat (_this select 0);
    };
 };
 
