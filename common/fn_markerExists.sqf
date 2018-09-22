@@ -11,7 +11,5 @@
 
 params ["_marker"];
 
-private _markerPos = (getMarkerPos _marker);
-if ((_markerPos select 0) != 0 || (_markerPos select 1 != 0)) exitWith {true;};
-
-false
+(getMarkerPos _marker) params ["_x", "_y"];
+(_x != 0 || _y != 0)

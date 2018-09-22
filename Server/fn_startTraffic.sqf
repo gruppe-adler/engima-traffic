@@ -55,7 +55,7 @@ private _activeVehiclesAndGroup = [];
       if (isMultiplayer) then {
          {
             if (isPlayer _x) then {
-               _allPlayerPositionsTemp = _allPlayerPositionsTemp append [position vehicle _x];
+               _allPlayerPositionsTemp append [position vehicle _x];
             };
          } foreach allPlayers;
       }else{
@@ -156,7 +156,7 @@ private _activeVehiclesAndGroup = [];
             private _pos = [_posX, _posY, 0];
 
             // Create vehicle
-            private _vehicleType = _possibleVehicles selectRandom _possibleVehicles;
+            private _vehicleType = selectRandom _possibleVehicles;
 
             // Run spawn script and attach handle to vehicle
             private _vehicleArray = [_pos,_vehicleType,_side] call enigmaTraffic_fnc_createRebelVehicle;
@@ -179,7 +179,7 @@ private _activeVehiclesAndGroup = [];
 
             _vehicleVarName = "enigmaTraffic_MilitaryTraffic_Entity_" + str _currentEntityNo;
             _vehicle setVehicleVarName _vehicleVarName;
-            _vehicle call compile format ["%1=_this;", _vehicleVarName];
+            missionNamespace setVariable [_vehicleVarName, _vehicle];
 
             // Set crew skill
             {
@@ -194,7 +194,7 @@ private _activeVehiclesAndGroup = [];
             _activeVehiclesAndGroup pushBack [_vehicle, _vehicleGroup, _vehiclesCrew, _debugMarkerName];
 
             // Run spawn script
-             _result spawn _fnc_OnSpawnVehicle;
+             _vehicle setVariable ["enigmaTraffic_scriptHandle", _result spawn _fnc_OnSpawnVehicle];
          };
 
          _tries = _tries + 1;
@@ -226,6 +226,12 @@ private _activeVehiclesAndGroup = [];
             {
                deleteVehicle _x;
             } foreach _crewUnits;
+
+            // Terminate script before deleting the vehicle
+            _scriptHandle = _vehicle getVariable "enigmaTraffic_scriptHandle";
+            if (!(scriptDone _scriptHandle)) then {
+               waitUntil {scriptDone _scriptHandle};
+            };
 
             deleteVehicle _vehicle;
             deleteGroup _group;

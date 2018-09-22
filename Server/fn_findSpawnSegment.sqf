@@ -6,7 +6,7 @@ params ["_currentInstanceIndex", "_allPlayerPositions", "_minSpawnDistance", "_m
 
 private _spawnDistanceDiff = _maxSpawnDistance - _minSpawnDistance;
 private _roadSegment = "NULL";
-private _refPlayerPos = (_allPlayerPositions selectRandom _allPlayerPositions);
+private _refPlayerPos = selectRandom _allPlayerPositions;
 private _areaMarkerName = ENGIMA_TRAFFIC_areaMarkerNames select _currentInstanceIndex;
 
 private _isOk = false;
@@ -22,7 +22,7 @@ while {!_isOk && _tries < 10} do {
    private _roadSegments = [_refPosX, _refPosY] nearRoads (_spawnDistanceDiff / 2);
 
    if (count _roadSegments > 0) then {
-      private _roadSegment = _roadSegments selectRandom _roadSegments;
+      private _roadSegment = selectRandom _roadSegments;
 
       // Check if road segment is ok
       private _tooFarAwayFromAll = true;
