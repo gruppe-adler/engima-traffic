@@ -1,3 +1,4 @@
+**not in development anymore. use https://github.com/gruppe-adler/grad-civs/ if you need civilians**
 
 modified version of [Engima's Traffic script v1.30](https://forums.bistudio.com/topic/186976-engima39s-traffic-script-release/) for Arma3
 
